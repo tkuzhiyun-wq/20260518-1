@@ -218,7 +218,6 @@ function mousePressed() {
   if (gameState === "WAITING") {
     restartGame();
   }
-  }
 }
 
 function drawConnect(keypoints, indices, displayW, displayH) {
