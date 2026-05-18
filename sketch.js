@@ -3,7 +3,7 @@ let handPose;
 let hands = [];
 
 // 遊戲狀態與變數
-let gameState = "WAITING"; // WAITING, COUNTDOWN, RESULT, MENU, RESTARTING, GAMEOVER
+let gameState = "COUNTDOWN"; // 初始狀態改為倒數，直接進入遊戲
 let countdownValue = 3;
 let timerStart = 0;
 let resultStartTime = 0;
@@ -25,6 +25,7 @@ function setup() {
   // 開始對攝影機影像進行手勢偵測
   handPose.detectStart(capture, gotHands);
   textAlign(CENTER, CENTER);
+  timerStart = millis(); // 記錄啟動時間以開始倒數
 }
 
 function draw() {
