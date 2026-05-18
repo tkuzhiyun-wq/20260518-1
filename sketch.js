@@ -94,7 +94,7 @@ function classifyGesture(hand) {
   if (indexUp && middleUp && ringUp && pinkyUp) return "Paper";
   if (!indexUp && !middleUp && !ringUp && !pinkyUp) return "Rock";
   if (indexUp && middleUp && !ringUp && !pinkyUp) return "Scissors";
-  return "Unknown";
+  return "Wait...";
 }
 
 function handleGameLogic() {
@@ -108,18 +108,18 @@ function handleGameLogic() {
       computerChoice = random(options);
       
       // 判定勝負
-      if (playerGesture === "Unknown" || playerGesture === "None" || playerGesture === "Wait...") {
-        resultMessage = "NO HAND DETECTED!";
+      if (playerGesture === "Wait..." || playerGesture === "None") {
+        resultMessage = "未偵測到手勢！";
       } else if (playerGesture === computerChoice) {
-        resultMessage = "TIE!";
+        resultMessage = "平手！";
       } else if (
         (playerGesture === "Rock" && computerChoice === "Scissors") ||
         (playerGesture === "Paper" && computerChoice === "Rock") ||
         (playerGesture === "Scissors" && computerChoice === "Paper")
       ) {
-        resultMessage = "YOU WIN!";
+        resultMessage = "你贏了！";
       } else {
-        resultMessage = "COMPUTER WINS!";
+        resultMessage = "電腦贏了！";
       }
       gameState = "RESULT";
       resultStartTime = millis(); // 記錄結果產生的時間
@@ -150,52 +150,66 @@ function handleGameLogic() {
   }
 }
 
+function translateGesture(g) {
+  const mapping = {
+    "Rock": "石頭",
+    "Paper": "布",
+    "Scissors": "剪刀",
+    "Thumbs Up": "讚 (重玩)",
+    "Thumbs Down": "倒讚 (結束)",
+    "Wait...": "辨識中...",
+    "None": "無"
+  };
+  return mapping[g] || g;
+}
+
 function displayUI() {
   fill(255);
   noStroke();
   
   // 即時顯示玩家手勢
   textSize(32);
-  text("YOUR GESTURE: " + playerGesture, width / 2, height * 0.85);
+  text("你的手勢: " + translateGesture(playerGesture), width / 2, height * 0.82);
 
   if (gameState === "WAITING") {
     textSize(48);
-    text("CLICK TO START", width / 2, height / 2);
+    text("點擊螢幕開始遊戲", width / 2, height * 0.15);
   } else if (gameState === "COUNTDOWN") {
-    textSize(120);
-    text(countdownValue, width / 2, height / 2);
+    textSize(100);
+    fill('#FFD700');
+    text(countdownValue, width / 2, height * 0.15);
   } else if (gameState === "RESULT") {
     textSize(32);
-    fill('#FFD700'); // 金色顯示電腦出拳
-    text("COMPUTER CHOSE: " + computerChoice, width / 2, height * 0.15);
+    fill('#FFD700'); 
+    text("電腦出拳: " + translateGesture(computerChoice), width / 2, height * 0.1);
     
-    textSize(80);
+    textSize(64);
     fill(255);
-    text(resultMessage, width / 2, height / 2);
+    text(resultMessage, width / 2, height * 0.18);
     
     textSize(24);
-    text("WAITING FOR MENU...", width / 2, height * 0.92);
+    text("即將進入選單...", width / 2, height * 0.9);
   } else if (gameState === "MENU") {
-    textSize(40);
+    textSize(36);
     fill(255);
-    text("CONTINUE?", width / 2, height / 2 - 40);
-    textSize(28);
+    text("要繼續遊戲嗎？", width / 2, height * 0.1);
+    textSize(24);
     fill('#00FF00'); // 綠色
-    text("👍 Thumbs Up = REPLAY", width / 2, height / 2 + 30);
+    text("👍 豎起大拇指 (讚) = 重新開始", width / 2, height * 0.88);
     fill('#FF3333'); // 紅色
-    text("👎 Thumbs Down = EXIT", width / 2, height / 2 + 80);
+    text("👎 大拇指朝下 (倒讚) = 結束遊戲", width / 2, height * 0.94);
   } else if (gameState === "RESTARTING") {
-    textSize(48);
+    textSize(40);
     fill(0, 255, 0);
-    text("繼續遊戲...", width / 2, height / 2);
+    text("繼續遊戲...", width / 2, height * 0.15);
   } else if (gameState === "GAMEOVER") {
     background(0);
-    textSize(64);
+    textSize(80);
     fill(255, 0, 0);
-    text("GAME OVER", width / 2, height / 2);
+    text("遊戲結束", width / 2, height / 2);
     textSize(24);
     fill(255);
-    text("Refresh the page to restart", width / 2, height / 2 + 80);
+    text("請重新整理頁面以重玩", width / 2, height / 2 + 80);
   }
 }
 
